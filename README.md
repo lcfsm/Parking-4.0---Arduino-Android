@@ -1,4 +1,4 @@
-# Parking-4.0---Arduino-Android
+# Parking-4.0---Arduino+Android
 Prototipo controlado por Arduino + Android que simula la operativa de un parking real, añadiéndole las siguientes funcionalidades: 
 
 •  Posibilidad de consultar las plazas disponibles así como la visualización de que plazas en concreto se encuentran ocupadas y poder facilitar su monitorización a través de una aplicación desarrollada en Android.  
