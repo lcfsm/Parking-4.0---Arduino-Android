@@ -718,7 +718,6 @@ cmd += "Host: api.thingspeak.com\r\n\r\n";
   {
     echoCommand("AT+CIPCLOSE", "", CONTINUE);
     Serial.println("Connection timeout.");
-    enviardatosredundancia();
     return;
   }
   // Send the raw HTTP request
@@ -733,87 +732,6 @@ cmd += "Host: api.thingspeak.com\r\n\r\n";
   //errorHalt("ONCE ONLY");
 }
 
-
-void enviardatosredundancia(){
-  Serial3.begin(115200);        // Communication with ESP8266 via 5V/3.3V level shifter
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LEDst);
-  pinMode(CH_PD_8266, OUTPUT);
-  digitalWrite(CH_PD_8266, HIGH);
-
-  Serial3.setTimeout(TIMEOUT);
-  Serial.println("ESP8266 Modo redundancia");
-
-  //delay(2000);
-echoCommand("AT+RST", "ready", HALT);    // Reset & test if the module is ready  
-  Serial.println("Module is ready / REDUNDANCY.");
-  echoCommand("AT+GMR", "OK", CONTINUE);   // Retrieves the firmware ID (version number) of the module. 
-  echoCommand("AT+CWMODE?","OK", CONTINUE);// Get module access mode. 
-  
-  
-  echoCommand("AT+CWMODE=1", "", HALT);    // Station mode
-  echoCommand("AT+CIPMUX=1", "", HALT);    // Allow multiple connections (we'll only use the first).
-
-  //connect to the wifi
-  boolean connection_established = false;
-  for(int i=0;i<100;i++)
-  {
-    if(connectWiFi())
-    {
-      connection_established = true;
-      break;
-    }
-  }
-  if (!connection_established) errorHalt("Connection failed 2");
-  
-  //delay(2000);
-
-  echoCommand("AT+CWSAP=?", "OK", CONTINUE); // Test connection
-  echoCommand("AT+CIFSR", "", HALT);         // Echo IP address. (Firmware bug - should return "OK".)
-  //echoCommand("AT+CIPMUX=0", "", HALT);      // Set single connection mode
-
-  
-  if(numplazas==0){
-  value1="0";
-}
-if(numplazas==1){
-  value1="1";
-}
-if(numplazas==2){
-  value1="2";
-}if(numplazas==3){
-  value1="3";
-}
-
-String chain="GET /update?api_key=F9JDP64BPF93WAI4&field1="+value1+"&field2="+plaza1ocupada+"&field3="+estadoalarma+" HTTP/1.1\r\n";
-
-
-// Establish TCP connection
-  String cmd = "AT+CIPSTART=0,\"TCP\",\""; 
-  cmd += DEST_IP; 
-  cmd += "\",80";
-  
-  if (!echoCommand(cmd, "OK", CONTINUE)) return;
-  //delay(2000);
-  // Get connection status 
-  if (!echoCommand("AT+CIPSTATUS", "OK", CONTINUE)) return;
-
-
-
-cmd=chain;
-cmd += "Host: api.thingspeak.com\r\n\r\n";
-  
-  // Ready the module to receive raw data
-  if (!echoCommand("AT+CIPSEND=0,"+String(cmd.length()), ">", CONTINUE))
-  {
-    echoCommand("AT+CIPCLOSE", "", CONTINUE);
-    Serial.println("Connection timeout.");
-    enviardatosredundancia2();
-    return;
-  }
-  // Send the raw HTTP request
-  echoCommand(cmd, "OK", CONTINUE);  // GET
-}
 
 ///////////////// CAMBIAR COLORES LUCES PARKING ////////////////////////////////
 
@@ -882,82 +800,3 @@ digitalWrite(BLUE_PIN, HIGH);
 delay(1000);*/
 
 
-void enviardatosredundancia2(){
-  Serial3.begin(115200);        // Communication with ESP8266 via 5V/3.3V level shifter
-  pinMode(LED, OUTPUT);
-  digitalWrite(LED, LEDst);
-  pinMode(CH_PD_8266, OUTPUT);
-  digitalWrite(CH_PD_8266, HIGH);
-
-  Serial3.setTimeout(TIMEOUT);
-  Serial.println("ESP8266 Modo redundancia");
-
-  //delay(2000);
-echoCommand("AT+RST", "ready", HALT);    // Reset & test if the module is ready  
-  Serial.println("Module is ready / REDUNDANCY.");
-  echoCommand("AT+GMR", "OK", CONTINUE);   // Retrieves the firmware ID (version number) of the module. 
-  echoCommand("AT+CWMODE?","OK", CONTINUE);// Get module access mode. 
-  
-  
-  echoCommand("AT+CWMODE=1", "", HALT);    // Station mode
-  echoCommand("AT+CIPMUX=1", "", HALT);    // Allow multiple connections (we'll only use the first).
-
-  //connect to the wifi
-  boolean connection_established = false;
-  for(int i=0;i<100;i++)
-  {
-    if(connectWiFi())
-    {
-      connection_established = true;
-      break;
-    }
-  }
-  if (!connection_established) errorHalt("Connection failed 2");
-  
-  //delay(2000);
-
-  echoCommand("AT+CWSAP=?", "OK", CONTINUE); // Test connection
-  echoCommand("AT+CIFSR", "", HALT);         // Echo IP address. (Firmware bug - should return "OK".)
-  //echoCommand("AT+CIPMUX=0", "", HALT);      // Set single connection mode
-
-  
-  if(numplazas==0){
-  value1="0";
-}
-if(numplazas==1){
-  value1="1";
-}
-if(numplazas==2){
-  value1="2";
-}if(numplazas==3){
-  value1="3";
-}
-
-String chain="GET /update?api_key=F9JDP64BPF93WAI4&field1="+value1+"&field2="+plaza1ocupada+"&field3="+estadoalarma+" HTTP/1.1\r\n";
-
-
-// Establish TCP connection
-  String cmd = "AT+CIPSTART=0,\"TCP\",\""; 
-  cmd += DEST_IP; 
-  cmd += "\",80";
-  
-  if (!echoCommand(cmd, "OK", CONTINUE)) return;
-  //delay(2000);
-  // Get connection status 
-  if (!echoCommand("AT+CIPSTATUS", "OK", CONTINUE)) return;
-
-
-
-cmd=chain;
-cmd += "Host: api.thingspeak.com\r\n\r\n";
-  
-  // Ready the module to receive raw data
-  if (!echoCommand("AT+CIPSEND=0,"+String(cmd.length()), ">", CONTINUE))
-  {
-    echoCommand("AT+CIPCLOSE", "", CONTINUE);
-    Serial.println("Connection timeout.");
-    return;
-  }
-  // Send the raw HTTP request
-  echoCommand(cmd, "OK", CONTINUE);  // GET
-}
