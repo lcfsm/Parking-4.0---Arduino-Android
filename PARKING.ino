@@ -15,21 +15,11 @@ long previousMillis3 = 0;
 long intervalOn3 = 1000;  
 
 char thingSpeakAddress[] = "api.thingspeak.com";
-String APIKey = "F9JDP64BPF93WAI4";
-unsigned long myChannelNumber = 115835;
+String APIKey = "YOURAPIKEY";
+unsigned long myChannelNumber = YOURCHANELNUMBER;
 
-//#define SSID        "SNAIL2.4"
-//#define PASS        "+Nu@s<9Bgj,D?N_yEg>"
-//#define SSID        "MCU"
-//#define PASS        "12345678" 
-#define SSID        "MotoG3"
-#define PASS        ""
-
-
-
-
-//#define DEST_HOST   "json.internetdelascosas.es"
-//#define DEST_IP     "212.227.247.230"
+#define SSID        "YOURSSID"
+#define PASS        "YOURPASS"
 
 #define DEST_HOST   "api.thingspeak.com"
 #define DEST_IP     "52.21.59.111"
@@ -577,10 +567,6 @@ if(servoentradalevantado==true){
       sepuedeenviar=true;
   }
 }
-
-
-
-
 }// FIN void loop()
 
 boolean isSame(byte *key, byte *serial)
@@ -591,9 +577,7 @@ boolean isSame(byte *key, byte *serial)
         return false; 
       }
     }
-    
     return true;
-
 }
 
 boolean isAuthorized(byte *serial)
@@ -634,7 +618,6 @@ digitalWrite(GREEN_PIN, HIGH);
 digitalWrite(BLUE_PIN, HIGH);
 }
 
-
 void plazas(){
   if(numplazas==0){
    display (1,1,1,1,1,1,0); //escribe 0
@@ -674,9 +657,6 @@ digitalWrite(GREEN_PIN, LOW);
 digitalWrite(BLUE_PIN, LOW);
 }
 
-
-
-
 // ******** ENVIAR DATOS ********
 void enviardatos() {
 sepuedeenviar=false;
@@ -693,7 +673,7 @@ if(numplazas==2){
   value1="3";
 }
 
-String chain="GET /update?api_key=F9JDP64BPF93WAI4&field1="+value1+"&field2="+plaza1ocupada+"&field3="+estadoalarma+" HTTP/1.1\r\n";
+String chain="GET /update?api_key=YOURAPIKEY="+value1+"&field2="+plaza1ocupada+"&field3="+estadoalarma+" HTTP/1.1\r\n";
 
 // Establish TCP connection
   String cmd = "AT+CIPSTART=0,\"TCP\",\""; 
